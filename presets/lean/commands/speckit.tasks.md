@@ -17,3 +17,5 @@ $ARGUMENTS
 3. Create dependency-ordered implementation tasks and store them in `<feature_directory>/tasks.md`.
    - Every task uses checklist format: `- [ ] [TaskID] Description with file path`
    - Organized by phase: setup, foundational, user stories in priority order, polish
+   - Surface the test strategy and proposed MVP scope as choices the user can change
+     (human-in-the-loop: `/memory/human-in-the-loop.md`).

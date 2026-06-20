@@ -14,9 +14,13 @@ $ARGUMENTS
 
 2. **Load context**: `.specify/memory/constitution.md` and `<feature_directory>/spec.md` and `<feature_directory>/plan.md` and `<feature_directory>/tasks.md`.
 
-3. **Execute tasks** in order:
+3. **Authorization gate (before writing any code)**: summarize what will change and get the
+   user's explicit go-ahead. Halt and ask if a task is ambiguous — don't improvise
+   (human-in-the-loop: `/memory/human-in-the-loop.md`).
+
+4. **Execute tasks** in order (only after authorization):
    - Complete each task before moving to the next
    - Mark completed tasks by changing `- [ ]` to `- [x]` in `<feature_directory>/tasks.md`
    - Halt on failure and report the issue
 
-4. **Validate**: Verify all tasks are completed and the implementation matches the spec.
+5. **Validate**: Verify all tasks are completed and the implementation matches the spec.

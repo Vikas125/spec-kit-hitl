@@ -20,4 +20,6 @@ $ARGUMENTS
 3. Create a specification from the user input and store it in `<feature_directory>/spec.md`.
    - Overview, functional requirements, user scenarios, success criteria
    - Every requirement must be testable
-   - Make informed defaults for unspecified details
+   - Propose defaults for unspecified details, but **surface them as assumptions to
+     confirm** — never silently decide scope, security, or auth (human-in-the-loop:
+     `/memory/human-in-the-loop.md`).

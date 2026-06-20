@@ -20,6 +20,7 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 COMMANDS_DIR = REPO_ROOT / "templates" / "commands"
+LEAN_COMMANDS_DIR = REPO_ROOT / "presets" / "lean" / "commands"
 WORKFLOW_FILE = REPO_ROOT / "workflows" / "speckit" / "workflow.yml"
 POLICY_TEMPLATE = REPO_ROOT / "templates" / "human-in-the-loop.md"
 CONSTITUTION = REPO_ROOT / ".specify" / "memory" / "constitution.md"
@@ -51,6 +52,28 @@ def test_every_core_command_embeds_hitl_contract(command: str) -> None:
     # It must point at the single source of truth (or be explicitly self-sufficient).
     assert "human-in-the-loop.md" in text, (
         f"{command}.md should reference /memory/human-in-the-loop.md."
+    )
+
+
+@pytest.mark.parametrize(
+    "command", ["specify", "plan", "implement", "tasks", "constitution"]
+)
+def test_lean_preset_commands_honor_hitl(command: str) -> None:
+    """The bundled lean preset's commands must also point at the HITL policy.
+
+    Lean stays terse, but its CRITICAL commands (plan/implement/specify) must not
+    silently decide architecture, write code, or default scope without the user.
+    """
+    text = (LEAN_COMMANDS_DIR / f"speckit.{command}.md").read_text(encoding="utf-8")
+    assert "human-in-the-loop.md" in text, (
+        f"lean speckit.{command}.md must reference /memory/human-in-the-loop.md"
+    )
+
+
+def test_lean_implement_gates_before_writing_code() -> None:
+    text = (LEAN_COMMANDS_DIR / "speckit.implement.md").read_text(encoding="utf-8").lower()
+    assert "authorization" in text and "before writing" in text, (
+        "lean implement must authorize before writing code"
     )
 
 
