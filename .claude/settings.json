@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "Bash(cd /Users/vikas/Documents/projects/spec-kit-human *)",
+      "Bash(.venv/bin/python -m pytest -q)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'fix: revert contradictory '\\\\''autonomous'\\\\'' commit trailers *)",
+      "Bash(git commit -m 'chore: clean up unintended documentation artifact *)",
+      "Bash(git push *)"
+    ],
+    "additionalDirectories": [
+      "/Users/vikas/Documents/projects/spec-kit-human/docs/concepts"
+    ]
+  }
+}
