@@ -43,6 +43,8 @@
       href: concepts/sdd.md
     - name: Human-in-the-Loop
       href: concepts/human-in-the-loop.md
+    - name: Differences from Upstream
+      href: concepts/differences-from-upstream.md
     - name: Spec Persistence Models
       href: concepts/spec-persistence.md
     - name: Handling Complex Features
