@@ -14,6 +14,20 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Human-in-the-Loop Contract
+
+**The constitution is the project's governing law. You draft and propose amendments; the human
+ratifies them.** Full protocol: `/memory/human-in-the-loop.md`.
+
+- **Surface, don't assume**: any placeholder value you infer from repo context (rather than
+  from the human's input) MUST be shown as `[ASSUMED — confirm]`. Principle wording, the
+  version-bump level, and the ratification date are all the human's to confirm.
+- **Confirmation gate (non-skippable) before writing**: present the proposed version bump
+  (with rationale), the diff of principles/sections, and every inferred value, then **wait for
+  approval** before overwriting `.specify/memory/constitution.md`. This file may be
+  human-edited; do not clobber it without a green light.
+- The human may edit any proposed principle or reject the bump level. Honor that.
+
 ## Pre-Execution Checks
 
 **Check for extension hooks (before constitution update)**:
@@ -97,7 +111,17 @@ Follow this execution flow:
    - Dates ISO format YYYY-MM-DD.
    - Principles are declarative, testable, and free of vague language ("should" → replace with MUST/SHOULD rationale where appropriate).
 
-7. Write the completed constitution back to `.specify/memory/constitution.md` (overwrite).
+6.5. **Confirmation gate (non-skippable — before writing)**: Present to the human, and **wait
+   for approval**:
+   - The proposed `CONSTITUTION_VERSION` bump (old → new) with the MAJOR/MINOR/PATCH rationale
+   - A summary of added / modified / removed principles and sections
+   - Every value you inferred rather than were told, each marked `[ASSUMED — confirm]`
+     (especially `RATIFICATION_DATE` and any principle wording)
+
+   Ask: **"Ratify this constitution update as shown, edit it, or change the version bump?"** Do
+   not overwrite the file until the human approves. Honor edits.
+
+7. After approval, write the completed constitution back to `.specify/memory/constitution.md` (overwrite).
 
 8. Output a final summary to the user with:
    - New version and bump rationale.

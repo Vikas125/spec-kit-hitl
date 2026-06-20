@@ -117,15 +117,21 @@
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
 
-## Assumptions
+## Assumptions & Decision Ledger
 
 <!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right assumptions based on reasonable defaults
-  chosen when the feature description did not specify certain details.
+  HUMAN-IN-THE-LOOP (Constitution Principle VI): this is a PROVENANCE LEDGER, not a place to
+  bury defaults. Every material gap the spec author filled without explicit user input MUST
+  appear here, tagged so the human can see exactly what to validate. Tags:
+    [STATED]            — the human said this explicitly; safe to rely on.
+    [ASSUMED — confirm] — a default chosen because the description didn't specify; needs validation.
+    [PENDING DECISION]  — a CRITICAL/HIGH choice still awaiting a human answer (see Clarifications).
+  CRITICAL gaps (scope, security/privacy, auth, target users, success criteria) should be
+  [PENDING DECISION], not silently [ASSUMED].
 -->
 
-- [Assumption about target users, e.g., "Users have stable internet connectivity"]
-- [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
-- [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
-- [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+- [ASSUMED — confirm] [Assumption about target users, e.g., "Users have stable internet connectivity"]
+- [ASSUMED — confirm] [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
+- [ASSUMED — confirm] [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
+- [PENDING DECISION] [Any CRITICAL gap not yet answered, e.g., "Authentication method — see Clarifications"]
+- [STATED] [Dependency the human gave explicitly, e.g., "Requires access to the existing user profile API"]

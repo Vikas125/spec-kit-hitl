@@ -13,6 +13,20 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Human-in-the-Loop Contract
+
+**You assess and advise; you append remediation tasks only with the human's go-ahead.** Full
+protocol: `/memory/human-in-the-loop.md`.
+
+- **Findings are advisory**: severity and gap-type classifications are your assessment, shown
+  for the human to weigh — not verdicts to act on automatically.
+- **Approval gate before the one write**: this command's only write is appending a
+  `## Phase N: Convergence` section to `tasks.md`. Present the findings summary first and **wait
+  for approval** of which findings become tasks. The human may drop, reword, or re-prioritize
+  any of them.
+- You never edit code, spec, or plan here; completing the appended tasks is a separate,
+  human-authorized `__SPECKIT_COMMAND_IMPLEMENT__` run.
+
 ## Pre-Execution Checks
 
 **Check for extension hooks (before convergence)**:
@@ -195,7 +209,12 @@ Before appending anything, output a compact, severity-graded summary (no file wr
 
 **If there are one or more actionable findings** (`tasks_appended` outcome):
 
-Append to the **end** of `tasks.md`, per the append contract:
+**Approval gate (non-skippable) before appending**: Having shown the findings summary in Step
+6, ask the human: **"Append these N findings as convergence tasks to `tasks.md`? (approve /
+select a subset / adjust wording / skip)"** and **wait**. Append only what the human approves;
+if they decline all, treat the run as advisory-only and write nothing.
+
+After approval, append to the **end** of `tasks.md`, per the append contract:
 
 1. Scan all existing task IDs; let `M` be the maximum. Determine the next phase number `N`
    (highest existing phase + 1).

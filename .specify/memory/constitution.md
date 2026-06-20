@@ -1,12 +1,16 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: (template/unratified) → 1.0.0
-Bump rationale: Initial ratification of a concrete constitution for the brownfield
-  Spec Kit / specify-cli codebase, derived from an exhaustive multi-pass analysis of
-  the source tree, test suite, CI pipelines, and project conventions (AGENTS.md,
-  CONTRIBUTING.md, DEVELOPMENT.md). MAJOR baseline because it establishes binding
-  governance where none previously existed.
+Version change: 1.0.0 → 1.1.0
+Bump rationale: MINOR — adds a new binding principle (VI. Human-in-the-Loop Authority)
+  without removing or redefining any existing principle. Codifies the human-in-the-loop
+  refactor: across all Spec Kit commands (skills), agent personas, and workflows the AI
+  acts as analyst/advisor/facilitator and the human is the decision-maker. The full
+  operating protocol lives in `/memory/human-in-the-loop.md` (new single source of truth).
+
+Previous version (1.0.0) Sync Impact Report retained below for history:
+  Version change: (template/unratified) → 1.0.0 — initial ratification, MAJOR baseline.
+  Principles I–V defined; Security/Workflow/Governance sections added.
 
 Principles defined:
   I.   Code Quality & Architectural Discipline
@@ -14,6 +18,7 @@ Principles defined:
   III. CLI & User-Experience Consistency
   IV.  Offline-First Performance & Resource Discipline
   V.   Minimal Dependencies & Safe, Idempotent File Operations
+  VI.  Human-in-the-Loop Authority (NON-NEGOTIABLE)   [added in 1.1.0]
 
 Added sections:
   - Security & Cross-Platform Constraints
@@ -21,14 +26,18 @@ Added sections:
   - Governance
 
 Templates reviewed for alignment:
-  ✅ .specify/templates/plan-template.md — generic "Constitution Check" gate (line 39)
-       remains valid; gates are now concretely populated by Principles I–V at plan time.
-  ✅ .specify/templates/spec-template.md — no constitution-specific tokens; no change needed.
-  ✅ .specify/templates/tasks-template.md — task categories (setup/foundational/story/polish)
-       already accommodate testing + performance + UX tasks mandated here; no change needed.
-  ✅ .github/agents/speckit.*.agent.md — command guidance is agent-agnostic; no change needed.
+  ✅ .specify/memory/human-in-the-loop.md — NEW: full HITL operating protocol referenced
+       by Principle VI and by every command.
+  ✅ .specify/templates/plan-template.md — Constitution Check gate remains valid; a
+       "Decision Points & Alternatives" section + assumption ledger added for Principle VI.
+  ✅ .specify/templates/spec-template.md — Assumptions section upgraded to a provenance
+       ledger (STATED / ASSUMED / PENDING DECISION) for Principle VI.
+  ✅ .specify/templates/tasks-template.md — task categories already accommodate the work;
+       no structural change needed.
+  ✅ .specify/templates/commands/*.md — each command now embeds a Human-in-the-Loop
+       Contract block and honors approval gates.
 
-Follow-up TODOs: none. RATIFICATION_DATE set to first adoption date below.
+Follow-up TODOs: none. RATIFICATION_DATE unchanged (original adoption date below).
 -->
 
 # Spec Kit Constitution
@@ -166,6 +175,36 @@ The project guards its dependency surface and its on-disk footprint deliberately
 **Rationale:** A lean, pinned dependency set and hardened, idempotent file handling are what
 keep the tool trustworthy in enterprise and air-gapped contexts and cheap to maintain.
 
+### VI. Human-in-the-Loop Authority (NON-NEGOTIABLE)
+
+Across every command (skill), agent persona, and workflow, the AI acts as an **analyst,
+advisor, and facilitator — never an autonomous decision-maker**. The full operating protocol
+is `/memory/human-in-the-loop.md`; it is binding, and the following are its hard gates:
+
+- **The AI generates options; the human chooses.** CRITICAL decisions — architecture, tech
+  stack, data model, security/privacy posture, scope boundaries, success criteria, and any
+  action that writes code or creates outward-facing artifacts (issues, PRs, deploys) — MUST
+  be presented as labeled Decision Points and MUST NOT be auto-selected.
+- **The AI surfaces assumptions; the human validates.** Every gap an agent fills with a
+  default MUST be surfaced and marked `[ASSUMED — confirm]`, never silently baked in. Outputs
+  MUST distinguish what the human stated from what the AI assumed from what is still pending a
+  human decision.
+- **Defaults are suggested, never imposed.** A default may take effect without a blocking
+  prompt only for MEDIUM/LOW-tier choices or when the human has previously approved it.
+  CRITICAL/HIGH defaults always require confirmation.
+- **Approval gates are visible and non-skippable.** Workflows MUST pause — not narrate and
+  continue — before implementation, before resource allocation, before any outward-facing
+  action, and before overwriting or deleting human-edited content. Every gate offers approve /
+  request-changes / reject / reconsider, and the human may override or redirect at any point.
+- **"I need more information" and "I need to reconsider" are legitimate agent outputs.** An
+  agent lacking the input to make a *recommendation* asks rather than guesses.
+
+**Rationale:** Spec-Driven Development only delivers value when the human owns the
+consequential decisions. An agent that silently defaults its way from one phrase to working
+code optimizes for motion over correctness and produces specs, plans, and implementations the
+human never actually chose. Keeping the human in the loop at every consequential juncture is
+what makes the generated artifacts trustworthy and the workflow auditable.
+
 ## Security & Cross-Platform Constraints
 
 - **Cross-platform parity is required.** Code MUST run on Linux, macOS, and Windows and on
@@ -196,10 +235,11 @@ keep the tool trustworthy in enterprise and air-gapped contexts and cheap to mai
 This constitution supersedes ad-hoc convention where they conflict; the existing codebase
 patterns it codifies remain authoritative references.
 
-- **Authority.** Principles I–V are binding gates. The `## Constitution Check` section of the
+- **Authority.** Principles I–VI are binding gates. The `## Constitution Check` section of the
   plan template MUST be evaluated against these principles, and `/speckit.analyze` treats
   conflicts with a MUST as CRITICAL. Violations are resolved by changing the spec, plan, or
-  tasks — not by diluting a principle.
+  tasks — not by diluting a principle. Principle VI additionally governs *how* every command
+  interacts with the human; its full protocol lives in `/memory/human-in-the-loop.md`.
 - **Amendments.** Changes to this document require a PR with rationale, maintainer approval,
   and a version bump per the policy below. Any amendment MUST propagate to dependent templates
   and command guidance in the same change, recorded in the Sync Impact Report at the top of
@@ -211,4 +251,4 @@ patterns it codifies remain authoritative references.
   Added complexity or any deviation MUST be justified in-PR (and, for plans, in the plan's
   Complexity Tracking section). Unjustified violations block merge.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-19 | **Last Amended**: 2026-06-19
+**Version**: 1.1.0 | **Ratified**: 2026-06-19 | **Last Amended**: 2026-06-20

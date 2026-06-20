@@ -22,6 +22,22 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Human-in-the-Loop Contract
+
+**You derive tasks from the approved spec and plan; you also make two choices the human should
+own.** Full protocol: `/memory/human-in-the-loop.md`.
+
+- **Surface these decisions (HIGH — recommend, don't silently default)**:
+  - **Test strategy**: whether to generate test tasks / follow TDD. State your recommendation
+    and the basis for it; if the spec/plan or `$ARGUMENTS` already settled it, treat as `[STATED]`.
+  - **MVP scope**: which user stories are in the first increment. Propose an MVP (typically
+    User Story 1) as a `[RECOMMENDATION]`, not a fait accompli.
+- **Assumptions** about dependencies or ordering that aren't in the artifacts go in a short
+  "Assumptions" note at the top of `tasks.md`, marked `[ASSUMED — confirm]`.
+- **The artifact is editable and gated**: `tasks.md` is for the human to review/adjust; the
+  workflow's review-tasks gate and `__SPECKIT_COMMAND_IMPLEMENT__`'s approval gate are where
+  execution is authorized. Do not start implementing here.
+
 ## Pre-Execution Checks
 
 **Check for extension hooks (before tasks generation)**:
@@ -141,7 +157,11 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
 
-**Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
+**Tests are a surfaced decision, not a silent default**: Default to generating test tasks only
+when the spec/plan or the user requested tests/TDD. But whichever way you lean, **state it in
+the Completion Report as a recommendation the human can flip** (e.g., "No test tasks generated
+because tests weren't requested — say 'add tests' to include a TDD layer"). Never quietly omit
+(or impose) a test strategy the human didn't choose.
 
 ### Checklist Format (REQUIRED)
 
@@ -212,5 +232,6 @@ Every task MUST strictly follow this format:
 ## Done When
 
 - [ ] tasks.md generated with all phases, task IDs, and file paths
+- [ ] Test strategy and proposed MVP scope surfaced as decisions the human can change (not silent defaults)
 - [ ] Extension hooks dispatched or skipped according to the rules in Mandatory Post-Execution Hooks above
-- [ ] Completion reported to user with task count, story breakdown, and MVP scope
+- [ ] Completion reported to user with task count, story breakdown, and MVP scope (labeled as a recommendation)

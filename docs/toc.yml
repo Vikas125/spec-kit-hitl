@@ -41,6 +41,8 @@
   items:
     - name: What is SDD?
       href: concepts/sdd.md
+    - name: Human-in-the-Loop
+      href: concepts/human-in-the-loop.md
     - name: Spec Persistence Models
       href: concepts/spec-persistence.md
     - name: Handling Complex Features

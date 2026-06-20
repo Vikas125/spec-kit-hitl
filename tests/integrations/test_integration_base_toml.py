@@ -533,6 +533,7 @@ class TomlIntegrationTests:
         for name in [
             "checklist-template.md",
             "constitution-template.md",
+            "human-in-the-loop.md",
             "plan-template.md",
             "spec-template.md",
             "tasks-template.md",
@@ -540,6 +541,7 @@ class TomlIntegrationTests:
             files.append(f".specify/templates/{name}")
 
         files.append(".specify/memory/constitution.md")
+        files.append(".specify/memory/human-in-the-loop.md")
         # Bundled workflow
         files.append(".specify/workflows/speckit/workflow.yml")
         files.append(".specify/workflows/workflow-registry.json")

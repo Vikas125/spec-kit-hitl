@@ -21,6 +21,26 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Human-in-the-Loop Contract
+
+**This command makes the most consequential technical choices in the workflow. You are an
+architect-advisor, not the decider.** Full protocol: `/memory/human-in-the-loop.md` (load IF
+EXISTS; if absent, this block is self-sufficient).
+
+- **Input you need from the human**: known constraints (language/runtime, platforms, hosting,
+  data store, performance/scale targets, compliance). The `__SPECKIT_COMMAND_PLAN__` invocation
+  message usually carries some ("I am building with…"); treat what's missing as input to
+  request or to raise as a decision — not to invent.
+- **Decision points (CRITICAL — present, recommend, do NOT auto-select)**: language &
+  primary dependencies, storage/persistence, architecture & project structure, testing
+  approach, and any third-party/external dependency. Each is resolved via the **Architecture
+  Decision Gate** below before any design artifact is generated.
+- **Assumptions**: anything you must assume to proceed goes into the plan's "Assumptions
+  (pending validation)" section marked `[ASSUMED — confirm]`.
+- **Approval gate**: the human approves the decision set **before** Phase 0/Phase 1 generate
+  research, data model, and contracts. Do not generate design artifacts on top of unapproved
+  CRITICAL decisions.
+
 ## Pre-Execution Checks
 
 **Check for extension hooks (before planning)**:
@@ -59,13 +79,45 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 1. **Setup**: Run `{SCRIPT}` from repo root and parse JSON for FEATURE_SPEC, IMPL_PLAN, SPECS_DIR, BRANCH. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
-2. **Load context**: Read FEATURE_SPEC and `/memory/constitution.md`. Load IMPL_PLAN template (already copied).
+2. **Load context**: Read FEATURE_SPEC and `/memory/constitution.md`. Load IMPL_PLAN template (already copied). IF EXISTS, also load `/memory/human-in-the-loop.md`.
 
-3. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
-   - Fill Technical Context (mark unknowns as "NEEDS CLARIFICATION")
+3. **Fill Technical Context**: Populate the Technical Context fields. For each field, mark its
+   provenance: `[STATED]` if the human/spec gave it, or `[ASSUMED — confirm]` / `NEEDS
+   CLARIFICATION` if you would otherwise be guessing. Do not paper over unknowns with
+   plausible-sounding defaults.
+
+4. **Architecture Decision Gate (CRITICAL — human approval required)**: Before any research or
+   design artifact is produced, surface the consequential technical choices as Decision Points
+   and **pause for the human's answers**. For each open CRITICAL field (language & primary
+   dependencies, storage, architecture/project structure, testing approach, notable external
+   dependencies), present:
+
+   ```markdown
+   ## Decision [N]: [e.g., Persistence layer]   ·   Sensitivity: CRITICAL
+
+   **What's being decided**: [one sentence]   **Downstream impact**: [what Phase 0/1 + tasks depend on it]
+
+   | Option | Description | Pros | Cons / Tradeoffs | Risks & Dependencies |
+   |--------|-------------|------|------------------|----------------------|
+   | A | ... | ... | ... | ... |
+   | B | ... | ... | ... | ... |
+   | C (Custom) | Provide your own | — | — | — |
+
+   **Recommendation**: Option [X] — [rationale]. *(Recommendation only; nothing is chosen until you confirm.)*
+   ```
+
+   - Skip a decision only when the human or spec already fixed it (record it as `[STATED]`).
+   - Batch the decisions so the human can answer them together, but keep each individually
+     answerable and editable. Wait for answers; do not self-resolve to keep moving.
+   - Record every confirmed answer in the plan; record anything still unsettled but
+     non-blocking as `[ASSUMED — confirm]`.
+
+5. **Execute plan workflow** (only after the Architecture Decision Gate is resolved): Follow
+   the structure in IMPL_PLAN template to:
    - Fill Constitution Check section from constitution
    - Evaluate gates (ERROR if violations unjustified)
-   - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
+   - Phase 0: Generate research.md — record the **human-approved** decisions and the
+     alternatives that were considered (do not silently re-decide them)
    - Phase 1: Generate data-model.md, contracts/, quickstart.md
    - Phase 1: Update agent context by running the agent script
    - Re-evaluate Constitution Check post-design
@@ -105,7 +157,12 @@ Check if `.specify/extensions.yml` exists in the project root.
 
 ## Completion Report
 
-Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generated artifacts.
+Command ends after Phase 2 planning. Report:
+- Branch, IMPL_PLAN path, and generated artifacts
+- The **decision set** the human approved at the Architecture Decision Gate (so it is on the
+  record), plus any `[ASSUMED — confirm]` items still carried in the plan
+- A reminder that the plan and its artifacts are editable, and that `__SPECKIT_COMMAND_TASKS__`
+  should run only once the human is satisfied with the plan (the workflow's review-plan gate)
 
 ## Phases
 
@@ -126,11 +183,14 @@ Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generate
    ```
 
 3. **Consolidate findings** in `research.md` using format:
-   - Decision: [what was chosen]
+   - Decision: [what was chosen] — note whether `[STATED]` by the human or `[APPROVED]` at the
+     Architecture Decision Gate; research MUST NOT overturn an approved decision without
+     re-surfacing it to the human
    - Rationale: [why chosen]
-   - Alternatives considered: [what else evaluated]
+   - Alternatives considered: [what else evaluated, including the options shown at the gate]
 
-**Output**: research.md with all NEEDS CLARIFICATION resolved
+**Output**: research.md in which every decision traces to a human-stated or human-approved
+choice (no NEEDS CLARIFICATION silently self-resolved)
 
 ### Phase 1: Design & Contracts
 
@@ -166,6 +226,8 @@ Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generate
 
 ## Done When
 
-- [ ] Plan workflow executed and design artifacts generated
+- [ ] Architecture Decision Gate completed — CRITICAL technical choices presented and approved by the human (not auto-selected)
+- [ ] Plan workflow executed and design artifacts generated on top of approved decisions
+- [ ] Assumptions surfaced as `[ASSUMED — confirm]`; no NEEDS CLARIFICATION silently self-resolved
 - [ ] Extension hooks dispatched or skipped according to the rules in Mandatory Post-Execution Hooks above
-- [ ] Completion reported to user with branch, plan path, and generated artifacts
+- [ ] Completion reported to user with branch, plan path, generated artifacts, and the approved decision set

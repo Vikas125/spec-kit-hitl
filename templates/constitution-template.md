@@ -28,6 +28,21 @@
 [PRINCIPLE_5_DESCRIPTION]
 <!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
 
+### Human-in-the-Loop Authority (RECOMMENDED BASELINE — keep, adapt, or remove)
+<!--
+  This principle is pre-filled (not a placeholder) because Spec Kit ships a human-in-the-loop
+  operating policy at `/memory/human-in-the-loop.md`. Keep it to bind that policy as
+  governance; adapt the wording to your project; or remove it if your project deliberately
+  opts out. If you remove it, also relax the references in the command files.
+-->
+Across every command, agent, and workflow the AI acts as analyst, advisor, and facilitator —
+never an autonomous decision-maker. CRITICAL decisions (architecture, data model,
+security/privacy, scope, and any action that writes code or creates outward-facing artifacts)
+MUST be presented as labeled options and MUST NOT be auto-selected; assumptions MUST be
+surfaced and validated, not silently baked in; approval gates are visible and non-skippable;
+and the human may override or redirect at any decision point. Full protocol:
+`/memory/human-in-the-loop.md`.
+
 ## [SECTION_2_NAME]
 <!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
 

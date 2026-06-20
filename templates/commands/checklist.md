@@ -34,6 +34,17 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Human-in-the-Loop Contract
+
+This command already opens with a clarifying interview (up to 3, optionally 5, questions)
+before generating anything — that is the human-in-the-loop entry point (full protocol:
+`/memory/human-in-the-loop.md`). Hold these points:
+
+- The "Defaults when interaction impossible" (depth/audience/focus) are a **fallback**, not a
+  shortcut: when you can ask, ask. When you fall back, **state which defaults you used** so the
+  human can correct them.
+- Don't hallucinate scope. If a focus area is uncertain, ask rather than assume.
+
 ## Pre-Execution Checks
 
 **Check for extension hooks (before checklist generation)**:

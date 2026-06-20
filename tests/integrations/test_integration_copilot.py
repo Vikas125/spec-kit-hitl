@@ -236,10 +236,12 @@ class TestCopilotIntegration:
             ".specify/scripts/bash/setup-tasks.sh",
             ".specify/templates/checklist-template.md",
             ".specify/templates/constitution-template.md",
+            ".specify/templates/human-in-the-loop.md",
             ".specify/templates/plan-template.md",
             ".specify/templates/spec-template.md",
             ".specify/templates/tasks-template.md",
             ".specify/memory/constitution.md",
+            ".specify/memory/human-in-the-loop.md",
             ".specify/workflows/speckit/workflow.yml",
             ".specify/workflows/workflow-registry.json",
         ])
@@ -308,10 +310,12 @@ class TestCopilotIntegration:
             ".specify/scripts/powershell/setup-tasks.ps1",
             ".specify/templates/checklist-template.md",
             ".specify/templates/constitution-template.md",
+            ".specify/templates/human-in-the-loop.md",
             ".specify/templates/plan-template.md",
             ".specify/templates/spec-template.md",
             ".specify/templates/tasks-template.md",
             ".specify/memory/constitution.md",
+            ".specify/memory/human-in-the-loop.md",
             ".specify/workflows/speckit/workflow.yml",
             ".specify/workflows/workflow-registry.json",
         ])
@@ -687,10 +691,12 @@ class TestCopilotSkillsMode:
             # Templates
             ".specify/templates/checklist-template.md",
             ".specify/templates/constitution-template.md",
+            ".specify/templates/human-in-the-loop.md",
             ".specify/templates/plan-template.md",
             ".specify/templates/spec-template.md",
             ".specify/templates/tasks-template.md",
             ".specify/memory/constitution.md",
+            ".specify/memory/human-in-the-loop.md",
             # Bundled workflow
             ".specify/workflows/speckit/workflow.yml",
             ".specify/workflows/workflow-registry.json",

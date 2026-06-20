@@ -70,6 +70,53 @@ def ensure_constitution_from_template(
             )
 
 
+def ensure_hitl_policy_from_template(
+    project_path: Path, tracker: StepTracker | None = None
+) -> None:
+    """Copy the human-in-the-loop policy template to memory if it doesn't exist.
+
+    Mirrors ``ensure_constitution_from_template``: the policy is the single source of
+    truth referenced by every command as ``/memory/human-in-the-loop.md`` (Constitution
+    Principle VI). Skipped if the user already has one; warns (non-fatally) if the
+    bundled template is missing.
+    """
+    memory_policy = project_path / ".specify" / "memory" / "human-in-the-loop.md"
+    template_policy = (
+        project_path / ".specify" / "templates" / "human-in-the-loop.md"
+    )
+
+    if memory_policy.exists():
+        if tracker:
+            tracker.add("hitl-policy", "Human-in-the-loop policy")
+            tracker.skip("hitl-policy", "existing file preserved")
+        return
+
+    if not template_policy.exists():
+        if tracker:
+            tracker.add("hitl-policy", "Human-in-the-loop policy")
+            tracker.error("hitl-policy", "template not found")
+        return
+
+    try:
+        memory_policy.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(template_policy, memory_policy)
+        if tracker:
+            tracker.add("hitl-policy", "Human-in-the-loop policy")
+            tracker.complete("hitl-policy", "copied from template")
+        else:
+            console.print(
+                "[cyan]Initialized human-in-the-loop policy from template[/cyan]"
+            )
+    except Exception as e:
+        if tracker:
+            tracker.add("hitl-policy", "Human-in-the-loop policy")
+            tracker.error("hitl-policy", str(e))
+        else:
+            console.print(
+                f"[yellow]Warning: Could not initialize human-in-the-loop policy: {e}[/yellow]"
+            )
+
+
 def register(app: typer.Typer) -> None:
     @app.command()
     def init(
@@ -375,6 +422,7 @@ def register(app: typer.Typer) -> None:
         for key, label in [
             ("chmod", "Ensure scripts executable"),
             ("constitution", "Constitution setup"),
+            ("hitl-policy", "Human-in-the-loop policy"),
             ("workflow", "Install bundled workflow"),
             ("agent-context", "Install agent-context extension"),
             ("final", "Finalize"),
@@ -451,6 +499,7 @@ def register(app: typer.Typer) -> None:
                 )
 
                 ensure_constitution_from_template(project_path, tracker=tracker)
+                ensure_hitl_policy_from_template(project_path, tracker=tracker)
 
                 try:
                     bundled_wf = _locate_bundled_workflow("speckit")

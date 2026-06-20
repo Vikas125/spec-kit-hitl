@@ -13,6 +13,24 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Human-in-the-Loop Contract
+
+**This command writes code — the highest-stakes action in the workflow. You are an executor
+operating under explicit human authorization, with visible gates.** Full protocol:
+`/memory/human-in-the-loop.md` (load IF EXISTS; if absent, this block is self-sufficient).
+
+- **Authorization is required before writing anything.** The Implementation Approval Gate
+  (below) is non-skippable: present the execution plan and **wait for a go-ahead** before
+  creating/modifying files (including ignore files).
+- **Decisions are not re-opened here.** Implementation follows the approved spec/plan/tasks.
+  If a task is ambiguous, underspecified, or would require a new CRITICAL decision, **stop and
+  ask** ("I need more information") rather than improvising — that is a legitimate output.
+- **Gates during execution**: pause and surface on any failure; never auto-"fix" by deviating
+  from the plan; confirm before any destructive or outward-facing action (deleting/overwriting
+  human-edited files, network/deploy steps).
+- **Progress is transparent**: report after each task and at each phase boundary so the human
+  can redirect or halt at any point.
+
 ## Pre-Execution Checks
 
 **Check for extension hooks (before implementation)**:
@@ -91,7 +109,22 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **IF EXISTS**: Read /memory/constitution.md for governance constraints
    - **IF EXISTS**: Read quickstart.md for integration scenarios
 
-4. **Project Setup Verification**:
+3.5. **Implementation Approval Gate (CRITICAL — non-skippable, before any write)**:
+
+   Before creating or modifying ANY file (this includes the ignore files in step 4), present a
+   concise pre-flight summary and **pause for explicit authorization**:
+   - Phases to be executed and the order
+   - Files that will be **created** vs. **modified** (best-effort list from tasks.md), and any
+     ignore files that will be generated
+   - Any tasks you judge ambiguous or risky, called out for the human
+   - Whether the human wants to run **straight through** (report progress, stop on failure) or
+     **pause after each phase** for review
+
+   Then ask: **"Proceed with implementation as summarized, adjust scope, or pause after each
+   phase?"** Do not begin writing until the human approves. If the human narrows scope (e.g.,
+   "just User Story 1 / MVP"), honor it. Treat "I need to reconsider" as a valid stop.
+
+4. **Project Setup Verification** (only after the Implementation Approval Gate is approved):
    - **REQUIRED**: Create/verify ignore files based on actual project setup:
 
    **Detection & Creation Logic**:
@@ -147,6 +180,10 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Follow TDD approach**: Execute test tasks before their corresponding implementation tasks
    - **File-based coordination**: Tasks affecting the same files must run sequentially
    - **Validation checkpoints**: Verify each phase completion before proceeding
+   - **Honor the gate preference from step 3.5**: if the human chose "pause after each phase",
+     stop at each phase boundary, report what was done, and wait for "continue" before the next
+     phase. Otherwise report phase completion and proceed. Either way, the human may interject
+     "stop"/"pause"/"reconsider" at any point and you MUST halt.
 
 7. Implementation execution rules:
    - **Setup first**: Initialize project structure, dependencies, configuration
@@ -210,7 +247,9 @@ Report final status with summary of completed work.
 
 ## Done When
 
-- [ ] All tasks in tasks.md completed and marked `[X]`
+- [ ] Implementation Approval Gate completed — human authorized the execution plan before any file was written
+- [ ] All tasks in tasks.md completed and marked `[X]` (or the human-approved subset, if scope was narrowed)
 - [ ] Implementation validated against specification, plan, and test coverage
+- [ ] Any ambiguous/underspecified task surfaced to the human rather than improvised
 - [ ] Extension hooks dispatched or skipped according to the rules in Mandatory Post-Execution Hooks above
 - [ ] Completion reported to user with summary of completed work

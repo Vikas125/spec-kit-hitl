@@ -1,10 +1,13 @@
 schema_version: "1.0"
 workflow:
   id: "speckit"
-  name: "Full SDD Cycle"
-  version: "1.0.0"
+  name: "Full SDD Cycle (human-in-the-loop)"
+  version: "1.1.0"
   author: "GitHub"
-  description: "Runs specify → plan → tasks → implement with review gates"
+  description: >
+    Runs specify → plan → tasks → implement with a non-skippable human approval
+    gate after every phase and an explicit authorization gate before any code is
+    written. Embodies Constitution Principle VI: the AI advises, the human decides.
 
 requires:
   # 0.8.5 is the first release with engine-side resolution of the
@@ -39,6 +42,14 @@ inputs:
     default: "full"
     enum: ["full", "backend-only", "frontend-only"]
 
+# Human-in-the-loop note (Constitution Principle VI):
+# Every `gate` below is a visible, non-skippable approval checkpoint. The engine
+# PAUSES at each gate; it does not narrate and continue. While paused, the human may
+# edit the generated artifact (spec.md / plan.md / tasks.md), then `specify workflow
+# resume <run_id>` to continue. Options on each gate:
+#   approve  -> proceed to the next phase
+#   edit     -> pause for the human to revise the artifact, then resume (reconsider path)
+#   reject   -> abort the run (on_reject: abort)
 steps:
   - id: specify
     command: speckit.specify
@@ -48,8 +59,12 @@ steps:
 
   - id: review-spec
     type: gate
-    message: "Review the generated spec before planning."
-    options: [approve, reject]
+    message: >
+      Review the generated spec. Check the Assumptions & Decision Ledger: confirm
+      every [ASSUMED — confirm] item and answer any [PENDING DECISION]. Tip: run
+      /speckit.clarify to resolve ambiguity before approving.
+      approve = continue to planning · edit = pause to revise spec.md, then resume · reject = abort.
+    options: [approve, edit, reject]
     on_reject: abort
 
   - id: plan
@@ -60,8 +75,12 @@ steps:
 
   - id: review-plan
     type: gate
-    message: "Review the plan before generating tasks."
-    options: [approve, reject]
+    message: >
+      Review the plan and its "Decision Points & Alternatives" table — confirm the
+      architecture/tech-stack choices recorded there are the ones YOU chose, not
+      defaults you never saw. Resolve any [ASSUMED — confirm] items.
+      approve = continue to tasks · edit = pause to revise plan.md, then resume · reject = abort.
+    options: [approve, edit, reject]
     on_reject: abort
 
   - id: tasks
@@ -70,8 +89,36 @@ steps:
     input:
       args: "{{ inputs.spec }}"
 
+  - id: review-tasks
+    type: gate
+    message: >
+      Review tasks.md: the proposed MVP scope and test strategy are recommendations
+      you can change. Adjust ordering/scope as needed.
+      approve = continue · edit = pause to revise tasks.md, then resume · reject = abort.
+    options: [approve, edit, reject]
+    on_reject: abort
+
+  - id: confirm-implementation
+    type: gate
+    message: >
+      AUTHORIZATION REQUIRED — the next step WRITES CODE and creates/modifies files
+      per tasks.md. Nothing has been implemented yet. Approve only when the spec,
+      plan, and tasks reflect your decisions.
+      approve = authorize implementation · reject = abort without writing code.
+    options: [approve, reject]
+    on_reject: abort
+
   - id: implement
     command: speckit.implement
     integration: "{{ inputs.integration }}"
     input:
       args: "{{ inputs.spec }}"
+
+  - id: accept-implementation
+    type: gate
+    message: >
+      Review the implemented changes against the spec and plan. approve = accept the
+      result · reject = record the run as not accepted (does not revert files; revert
+      or follow up manually).
+    options: [approve, reject]
+    on_reject: abort

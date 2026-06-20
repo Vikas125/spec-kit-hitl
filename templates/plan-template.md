@@ -36,6 +36,32 @@
 
 **Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
+<!--
+  HUMAN-IN-THE-LOOP (Constitution Principle VI): tag each field above with its provenance —
+  [STATED] (human/spec gave it) or [ASSUMED — confirm] / NEEDS CLARIFICATION. Do not present a
+  guessed value as settled fact.
+-->
+
+## Decision Points & Alternatives (Architecture Decision Gate)
+
+<!--
+  Record the CRITICAL technical decisions that were presented to the human and the option they
+  chose. This is the auditable trail that the architecture was decided BY THE HUMAN, not by the
+  agent. One row per decision; "Chosen" must reflect the human's selection (or [STATED] if they
+  fixed it up front). Keep the rejected alternatives so the decision can be revisited.
+-->
+
+| Decision | Options Presented | Chosen (by human) | Rationale | Rejected Alternatives |
+|----------|-------------------|-------------------|-----------|-----------------------|
+| [e.g., Persistence] | [Postgres / SQLite / files] | [Postgres] | [why] | [SQLite — single-writer limit] |
+| [e.g., Project structure] | [single / web / mobile+api] | [web] | [why] | [single — frontend needed] |
+
+### Assumptions (pending validation)
+
+<!-- Anything the plan must assume to proceed but the human has not confirmed. Tag [ASSUMED — confirm]. -->
+
+- [ASSUMED — confirm] [e.g., "Deployment target is a Linux container; not yet confirmed"]
+
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*

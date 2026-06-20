@@ -415,6 +415,7 @@ class SkillsIntegrationTests:
             f".specify/integrations/{self.KEY}.manifest.json",
             ".specify/integrations/speckit.manifest.json",
             ".specify/memory/constitution.md",
+            ".specify/memory/human-in-the-loop.md",
         ]
         # Script variant
         if script_variant == "sh":
@@ -437,6 +438,7 @@ class SkillsIntegrationTests:
         files += [
             ".specify/templates/checklist-template.md",
             ".specify/templates/constitution-template.md",
+            ".specify/templates/human-in-the-loop.md",
             ".specify/templates/plan-template.md",
             ".specify/templates/spec-template.md",
             ".specify/templates/tasks-template.md",

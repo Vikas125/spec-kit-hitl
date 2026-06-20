@@ -18,6 +18,22 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Human-in-the-Loop Contract
+
+**Your role here is analyst and facilitator, not autonomous author.** Full protocol:
+`/memory/human-in-the-loop.md` (load it IF EXISTS; if absent, this block is self-sufficient).
+
+- **Input you need from the human** (collect before drafting — see Input Collection): the
+  problem/users/value, scope boundaries (in and out), and any hard constraints. If the
+  feature description is a single sentence, you are missing input — ask, do not invent it.
+- **Decision points (do NOT auto-resolve)**: feature scope/boundaries, target users &
+  permissions, security/privacy/compliance posture, and success criteria. These are CRITICAL
+  — present them, recommend, and let the human choose.
+- **Assumptions**: every gap you fill with a default goes into the spec's Assumptions ledger
+  marked `[ASSUMED — confirm]`. Do not silently bake defaults into requirements.
+- **Approval gate**: present the draft + the assumptions + any open decisions and **wait for
+  the human to approve or edit** before reporting the spec as ready for planning.
+
 ## Pre-Execution Checks
 
 **Check for extension hooks (before specification)**:
@@ -118,19 +134,25 @@ Given that feature description, do this:
        If empty: ERROR "No feature description provided"
     2. Extract key concepts from description
        Identify: actors, actions, data, constraints
-    3. For unclear aspects:
-       - Make informed guesses based on context and industry standards
-       - Only mark with [NEEDS CLARIFICATION: specific question] if:
-         - The choice significantly impacts feature scope or user experience
-         - Multiple reasonable interpretations exist with different implications
-         - No reasonable default exists
-       - **LIMIT: Maximum 3 [NEEDS CLARIFICATION] markers total**
+    3. For unclear aspects (human-in-the-loop — see Human-in-the-Loop Contract):
+       - You may propose a default to keep momentum, but you MUST classify and surface it,
+         never silently bake it into a requirement:
+         - **Scope, security/privacy/compliance, target users/permissions, or success
+           criteria** → these are CRITICAL. Raise them as `[NEEDS CLARIFICATION]` /
+           Decision Points; do not resolve them on the human's behalf.
+         - **Lower-impact gaps** → fill with a clearly-labeled assumption and record it in the
+           Assumptions ledger as `[ASSUMED — confirm]` so the human can challenge it.
+       - **Blocking-question budget: up to 3 `[NEEDS CLARIFICATION]` markers** surfaced for
+         interactive resolution (to avoid fatigue) — but this is a cap on *blocking* questions,
+         NOT a license to silently decide the rest. Everything you assumed beyond the cap MUST
+         still appear in the Assumptions ledger for the human to review.
        - Prioritize clarifications by impact: scope > security/privacy > user experience > technical details
     4. Fill User Scenarios & Testing section
        If no clear user flow: ERROR "Cannot determine user scenarios"
     5. Generate Functional Requirements
        Each requirement must be testable
-       Use reasonable defaults for unspecified details (document assumptions in Assumptions section)
+       For unspecified details, apply a labeled default and record it in the Assumptions ledger
+       as `[ASSUMED — confirm]` (never as an unmarked fact)
     6. Define Success Criteria
        Create measurable, technology-agnostic outcomes
        Include both quantitative metrics (time, performance, volume) and qualitative measures (user satisfaction, task completion)
@@ -265,12 +287,27 @@ Check if `.specify/extensions.yml` exists in the project root.
     To execute: `/{command}`
     ```
 
+## Approval Gate (before reporting ready)
+
+This is a **non-skippable** checkpoint (Constitution Principle VI). Before you declare the
+spec ready for the next phase, present to the human and **pause for a response**:
+
+- **What you were told** — the requirements traceable to the human's input `[STATED]`.
+- **What you assumed** — the Assumptions ledger, each entry `[ASSUMED — confirm]`.
+- **What's still pending** — any open `[NEEDS CLARIFICATION]` / Decision Points.
+
+Then ask: **"Approve this spec as-is, edit any assumption/requirement, or answer the open
+questions?"** The spec file is written so the human can edit it directly. Do not treat the
+spec as ready, and do not auto-advance to `__SPECKIT_COMMAND_CLARIFY__` / `__SPECKIT_COMMAND_PLAN__`,
+until the human approves. Honor any edits as the new source of truth.
+
 ## Completion Report
 
-Report completion to the user with:
+After approval, report completion to the user with:
 - `SPECIFY_FEATURE_DIRECTORY` — the feature directory path
 - `SPEC_FILE` — the spec file path
 - Checklist results summary
+- A one-line split of STATED vs. ASSUMED vs. PENDING items
 - Readiness for the next phase (`__SPECKIT_COMMAND_CLARIFY__` or `__SPECKIT_COMMAND_PLAN__`)
 
 **NOTE:** Branch creation is handled by the `before_specify` hook (git extension). Spec directory and file creation are always handled by this core command.
@@ -290,28 +327,35 @@ Report completion to the user with:
 
 ### For AI Generation
 
-When creating this spec from a user prompt:
+When creating this spec from a user prompt (operate as advisor, not autonomous author):
 
-1. **Make informed guesses**: Use context, industry standards, and common patterns to fill gaps
-2. **Document assumptions**: Record reasonable defaults in the Assumptions section
-3. **Limit clarifications**: Maximum 3 [NEEDS CLARIFICATION] markers - use only for critical decisions that:
+1. **Propose, then surface — don't silently guess**: Use context and common patterns to
+   propose a fill for a gap, but record every such fill in the Assumptions ledger as
+   `[ASSUMED — confirm]`. The human can accept or change any of them.
+2. **Document assumptions transparently**: The Assumptions section is a *ledger*, not a
+   dumping ground — each entry is a default the human still needs to validate.
+3. **Surface CRITICAL gaps as decisions, not defaults**: For up to 3 blocking
+   `[NEEDS CLARIFICATION]` markers, choose the highest-impact decisions that:
    - Significantly impact feature scope or user experience
    - Have multiple reasonable interpretations with different implications
-   - Lack any reasonable default
+   - Carry security/privacy/compliance or cost consequences
 4. **Prioritize clarifications**: scope > security/privacy > user experience > technical details
 5. **Think like a tester**: Every vague requirement should fail the "testable and unambiguous" checklist item
-6. **Common areas needing clarification** (only if no reasonable default exists):
+6. **Areas that are CRITICAL — present as decisions, never auto-decide**:
    - Feature scope and boundaries (include/exclude specific use cases)
-   - User types and permissions (if multiple conflicting interpretations possible)
-   - Security/compliance requirements (when legally/financially significant)
+   - User types and permissions
+   - Security / authentication / data-retention / compliance posture
+   - Success criteria and target metrics
 
-**Examples of reasonable defaults** (don't ask about these):
+**Defaults you MAY propose — but must surface as `[ASSUMED — confirm]`, never bury**:
 
-- Data retention: Industry-standard practices for the domain
-- Performance targets: Standard web/mobile app expectations unless specified
-- Error handling: User-friendly messages with appropriate fallbacks
-- Authentication method: Standard session-based or OAuth2 for web apps
-- Integration patterns: Use project-appropriate patterns (REST/GraphQL for web services, function calls for libraries, CLI args for tools, etc.)
+- Data retention: propose an industry-standard practice for the domain, flagged for confirmation
+- Performance targets: propose standard expectations unless specified, flagged for confirmation
+- Error handling: propose user-friendly messages with fallbacks, flagged for confirmation
+- Authentication method: this is security-sensitive — prefer raising it as a decision; if you
+  propose a default (e.g. session-based or OAuth2), surface it prominently for confirmation
+- Integration patterns: propose project-appropriate patterns (REST/GraphQL for web services,
+  function calls for libraries, CLI args for tools), flagged for confirmation
 
 ### Success Criteria Guidelines
 
@@ -339,5 +383,7 @@ Success criteria must be:
 ## Done When
 
 - [ ] Specification written to `SPEC_FILE` and validated against quality checklist
+- [ ] Assumptions surfaced as a `[ASSUMED — confirm]` ledger; CRITICAL gaps raised as decisions
+- [ ] Approval Gate completed — human approved or edited the spec (not auto-advanced)
 - [ ] Extension hooks dispatched or skipped according to the rules in Mandatory Post-Execution Hooks above
 - [ ] Completion reported to user with feature directory, spec file path, and checklist results

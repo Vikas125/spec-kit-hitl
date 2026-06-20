@@ -47,6 +47,14 @@ You **MUST** consider the user input before proceeding (if not empty).
     ```
 - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
 
+## Human-in-the-Loop Contract
+
+This command is already advisory and **strictly read-only** — it embodies the human-in-the-loop
+stance (full protocol: `/memory/human-in-the-loop.md`): it reports findings and offers an
+*optional* remediation plan that the human must explicitly approve before any editing command
+runs. Keep it that way — never modify files, never auto-apply remediations, and present
+severities as your assessment for the human to weigh.
+
 ## Goal
 
 Identify inconsistencies, duplications, ambiguities, and underspecified items across the three core artifacts (`spec.md`, `plan.md`, `tasks.md`) before implementation. This command MUST run only after `__SPECKIT_COMMAND_TASKS__` has successfully produced a complete `tasks.md`.

@@ -17,6 +17,18 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Human-in-the-Loop Contract
+
+This command is already a human-in-the-loop interview — it exists to pull decisions back to the
+human. Hold the line on these points (full protocol: `/memory/human-in-the-loop.md`):
+
+- The "Recommended"/"Suggested" answer you attach to each question is a **labeled
+  recommendation only**. Accepting it requires an explicit "yes"/"recommended" from the human;
+  never auto-apply it or assume silence means assent.
+- One question at a time; the human's answer is authoritative even when it differs from your
+  recommendation. Record their wording, not yours.
+- Respect early-termination ("done", "stop", "proceed") and never exceed the question cap.
+
 ## Pre-Execution Checks
 
 **Check for extension hooks (before clarification)**:
