@@ -1,6 +1,6 @@
 # Differences from Upstream (github/spec-kit)
 
-This document outlines the differences between this repository (**spec-kit-human**) and the upstream [github/spec-kit](https://github.com/github/spec-kit). 
+This document outlines the differences between this repository (**spec-kit-hitl**) and the upstream [github/spec-kit](https://github.com/github/spec-kit). 
 
 The primary difference lies in the **Human-in-the-Loop (HITL) Framework**, which shifts the AI from an autonomous builder to an analyst/advisor under direct human authority.
 
@@ -8,7 +8,7 @@ The primary difference lies in the **Human-in-the-Loop (HITL) Framework**, which
 
 ## 1. Overview of Key Differences
 
-| Feature | Upstream (`github/spec-kit`) | This Fork (`spec-kit-human`) |
+| Feature | Upstream (`github/spec-kit`) | This Fork (`spec-kit-hitl`) |
 | :--- | :--- | :--- |
 | **AI Decision Making** | Highly autonomous; AI fills gaps with "reasonable defaults" to keep workflow moving. | Advisory only; AI generates options and recommendations, but the human decides. |
 | **Governance** | Principles I–V (Code quality, structure, UX, performance, dependencies). | Principles I–VI (adds **Principle VI: Human-in-the-Loop Authority**). |
@@ -24,7 +24,7 @@ The primary difference lies in the **Human-in-the-Loop (HITL) Framework**, which
 
 In the upstream repository, the SDD (Spec-Driven Development) cycle is designed for high velocity, relying on the agent to make technical choices and self-correct later. 
 
-In **spec-kit-human**, the workflow prioritizes **safety, control, and auditability**:
+In **spec-kit-hitl**, the workflow prioritizes **safety, control, and auditability**:
 * The agent is prohibited from defaulting its way from a short prompt to working code.
 * Ambiguous scope boundaries are marked as `[PENDING DECISION]`, forcing a human choice.
 * Technical decisions (tech stack, data store, project layout) must be presented in a structured matrix with pros/cons/risks.
