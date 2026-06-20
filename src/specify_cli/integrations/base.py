@@ -594,6 +594,13 @@ class IntegrationBase(ABC):
         ]
         if plan_path:
             lines.append(f"at {plan_path}")
+        lines.extend([
+            "",
+            "⚠️ HITL Policy Enforcement:",
+            "You must load and adhere to the project's Human-in-the-Loop Operating Policy",
+            "at /memory/human-in-the-loop.md (Constitution Principle VI) for all decisions",
+            "and user interactions."
+        ])
         return "\n".join(lines)
 
     @staticmethod

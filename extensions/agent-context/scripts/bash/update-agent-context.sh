@@ -155,6 +155,11 @@ trap 'rm -f "$TMP_SECTION"' EXIT
   if [[ -n "$PLAN_PATH" ]]; then
     echo "at $PLAN_PATH"
   fi
+  echo ""
+  echo "⚠️ HITL Policy Enforcement:"
+  echo "You must load and adhere to the project's Human-in-the-Loop Operating Policy"
+  echo "at /memory/human-in-the-loop.md (Constitution Principle VI) for all decisions"
+  echo "and user interactions."
   echo "$MARKER_END"
 } > "$TMP_SECTION"
 

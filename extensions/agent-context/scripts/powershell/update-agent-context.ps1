@@ -196,6 +196,11 @@ $lines = @($MarkerStart,
 if ($PlanPath) {
     $lines += "at $PlanPath"
 }
+$lines += ''
+$lines += '⚠️ HITL Policy Enforcement:'
+$lines += 'You must load and adhere to the project''s Human-in-the-Loop Operating Policy'
+$lines += 'at /memory/human-in-the-loop.md (Constitution Principle VI) for all decisions'
+$lines += 'and user interactions.'
 $lines += $MarkerEnd
 $Section = ($lines -join "`n") + "`n"
 
