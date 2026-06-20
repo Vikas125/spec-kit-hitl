@@ -34,6 +34,9 @@ env/
 .DS_Store
 *.tmp
 
+# Local AI coding-agent tooling (machine-specific permissions/paths; not shared)
+.claude/
+
 # Project specific
 *.log
 .env

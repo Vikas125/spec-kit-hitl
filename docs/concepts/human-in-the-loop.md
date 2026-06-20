@@ -70,7 +70,7 @@ refactoring priority:
 |---|-------------------|--------|
 | 0 | **`templates/human-in-the-loop.md`** (new) | Distributable source of the policy; bundled with templates and installed to `.specify/templates/` on `init`. |
 | 1 | **`.specify/memory/human-in-the-loop.md`** (new) | Active single source of truth for this repo: roles, decision tiers, Decision Point format, Assumption Ledger, default handling, approval gates, authority. |
-| 2 | **`constitution.md`** | Added Principle VI *Human-in-the-Loop Authority (NON-NEGOTIABLE)*; bumped 1.0.0 → 1.1.0; updated Sync Impact Report + governance authority. |
+| 2 | **`constitution.md`** | Added Principle VI *Human-in-the-Loop Authority (NON-NEGOTIABLE)* (1.0.0 → 1.1.0); later expanded VI to encourage scanning code/docs/specs and web search before presenting options (1.1.0 → 1.2.0); updated Sync Impact Report + governance authority. |
 | 3 | **`constitution-template.md`** | Added a recommended-baseline HITL principle for new projects. |
 | 4 | **`commands/specify.md`** | HITL Contract; reframed "informed guesses/defaults" into a surfaced `[ASSUMED — confirm]` ledger; CRITICAL gaps become decisions; added a non-skippable approval gate before "ready". |
 | 5 | **`commands/plan.md`** | HITL Contract; added an **Architecture Decision Gate** (options + pros/cons/risks + labeled recommendation) before any artifact is generated; research records human-approved decisions only. |
@@ -83,6 +83,12 @@ refactoring priority:
 | 12 | **`spec-template.md`** | "Assumptions" upgraded to an **Assumptions & Decision Ledger** with `[STATED]` / `[ASSUMED — confirm]` / `[PENDING DECISION]` provenance tags. |
 | 13 | **`plan-template.md`** | Added **Decision Points & Alternatives** table (auditable record of human-chosen architecture) + an Assumptions-pending-validation section. |
 | 14 | **`workflow.yml`** | Non-skippable approval gate after **every** phase (`review-spec`, `review-plan`, `review-tasks`), a dedicated **`confirm-implementation`** authorization gate before code is written, and a final `accept-implementation` gate; `edit` option provides the reconsider/revise path. |
+| 15 | **`pyproject.toml`** | Force-includes `templates/human-in-the-loop.md` into the bundled `core_pack` so the policy ships with the package. |
+| 16 | **`init.py`** | `ensure_hitl_policy_from_template()` seeds `.specify/templates/human-in-the-loop.md` → `.specify/memory/human-in-the-loop.md` on `specify init` (idempotent; skips if present), with a `("hitl-policy", …)` tracker step. |
+| 17 | **`integrations/base.py` + `agent-context` ext scripts** | The agent-context block (and the `update-agent-context` bash/PowerShell scripts) inject a *HITL Policy Enforcement* reminder pointing at `/memory/human-in-the-loop.md` (Principle VI), so every agent loads the policy. |
+| 18 | **`presets/lean/commands/*`** | Propagated concise HITL lines into the bundled lean preset's `specify`, `plan`, `implement`, `tasks`, and `constitution` commands. |
+| 19 | **`tests/test_human_in_the_loop.py`** (new) | 22 structural-enforcement tests locking in the invariants (every command embeds the contract; named gates exist; workflow gates every phase and aborts on reject; policy is shipped + bundled; `init` seeds it; constitution carries Principle VI). |
+| 20 | **`docs/concepts/differences-from-upstream.md`** (new) | Side-by-side comparison of this fork vs. upstream `github/spec-kit`. |
 
 ---
 
@@ -166,6 +172,15 @@ validation** · **Approval gates / bypass conditions**.
   `confirm-implementation` and `accept-implementation` (approve/reject). All `on_reject:
   abort`. `edit` pauses for the human to revise the artifact, then `specify workflow resume`.
 
+### Agent context (cross-cutting enforcement)
+- **What:** the agent-context block emitted by
+  [`integrations/base.py`](../../src/specify_cli/integrations/base.py) and the
+  `agent-context` extension's `update-agent-context` scripts now append a *HITL Policy
+  Enforcement* reminder.
+- **Effect:** every agent that loads its context file is pointed at
+  `/memory/human-in-the-loop.md` (Constitution Principle VI) for all decisions and user
+  interactions — so the contract reaches even agents invoked outside the bundled workflow.
+
 ---
 
 ## Phase 4 — Testing Plan (verifying HITL enforcement)
@@ -182,12 +197,14 @@ The validation criteria and how to check each:
 | User can override/redirect at any point | At any gate choose `edit`, modify the artifact, `specify workflow resume`; confirm downstream steps consume the edited file. |
 | Outward actions gated | Run `/speckit.taskstoissues` against a GitHub remote; confirm a preview + approval prompt appears before any issue is created. |
 | Governance binds it | Run `/speckit.analyze`; confirm a Principle VI violation (e.g., a plan that auto-selected a stack with no decision record) is flagged CRITICAL. |
+| Invariants are regression-locked | Run `pytest tests/test_human_in_the_loop.py` — 22 structural tests assert every command embeds the contract, named gates exist, the workflow gates every phase and aborts on reject, the policy is shipped + bundled, and `init` seeds it. |
 
-**Suggested automated coverage** (follow-up): a workflow-structure test asserting the `speckit`
-workflow contains a `confirm-implementation` gate immediately before `implement` and a gate
-after each command step; a lint test asserting each `templates/commands/*.md` contains a
-"Human-in-the-Loop Contract" heading. These complement the existing `tests/test_workflows.py`
-suite.
+**Automated coverage (implemented):** [`tests/test_human_in_the_loop.py`](../../tests/test_human_in_the_loop.py)
+asserts the `speckit` workflow contains a `confirm-implementation` gate immediately before
+`implement` and a gate after each command step, that each `templates/commands/*.md` contains a
+"Human-in-the-Loop Contract" heading, that the policy template is shipped and force-included in
+`pyproject.toml`, and that `specify init` seeds the policy into `.specify/memory/`. These run
+alongside the existing `tests/test_workflows.py` suite.
 
 ---
 
@@ -230,22 +247,30 @@ four provenance tags:
 
 ---
 
-## Scope & follow-ups
+## Scope
 
-This refactor covers the **canonical core**: `templates/commands/*.md`, `templates/*.md`,
-`workflows/speckit/workflow.yml`, and the constitution + new policy file.
+This refactor covers the **canonical core** — `templates/commands/*.md`, `templates/*.md`,
+`workflows/speckit/workflow.yml`, the constitution + new policy file — plus the distribution
+and enforcement wiring around it.
 
-Recommended next increments (deliberately out of scope here to avoid destabilizing the Python
-test matrix and the lean preset variants):
+**Completed (initially scoped as follow-ups):**
 
-1. **Auto-seed the policy on `init`.** Add an `ensure_hitl_policy_from_template()` in
-   [`src/specify_cli/commands/init.py`](../../src/specify_cli/commands/init.py) that mirrors
+1. ✅ **Auto-seed the policy on `init`.** `ensure_hitl_policy_from_template()` in
+   [`src/specify_cli/commands/init.py`](../../src/specify_cli/commands/init.py) mirrors
    `ensure_constitution_from_template` (copy `.specify/templates/human-in-the-loop.md` →
-   `.specify/memory/human-in-the-loop.md`, skip if present, warn if template missing), plus a
-   `("hitl", "Human-in-the-loop policy")` tracker step. Until then commands are self-sufficient
-   via their embedded contracts.
-2. **Propagate HITL Contract blocks** into the `presets/{lean,self-test,scaffold}/commands/`
-   and `extensions/*/commands/` copies. They already inherit Principle VI via the constitution.
-3. **Add structural tests**: assert the `speckit` workflow has a `confirm-implementation` gate
-   immediately before `implement`, and that each core command file contains a "Human-in-the-Loop
-   Contract" heading (extends `tests/test_workflows.py`).
+   `.specify/memory/human-in-the-loop.md`, skip if present, warn if template missing), with a
+   `("hitl-policy", …)` tracker step.
+2. ✅ **Propagate HITL into the bundled lean preset.** `presets/lean/commands/` carries concise
+   HITL lines on `specify`, `plan`, `implement`, `tasks`, and `constitution`. All presets and
+   extensions also inherit Principle VI via the constitution.
+3. ✅ **Structural tests.** [`tests/test_human_in_the_loop.py`](../../tests/test_human_in_the_loop.py)
+   asserts the `speckit` workflow has a `confirm-implementation` gate immediately before
+   `implement`, that each core command file contains a "Human-in-the-Loop Contract" heading,
+   that the policy is shipped + bundled, and that `init` seeds it.
+
+**Remaining follow-ups:**
+
+- Propagate explicit HITL Contract blocks into the `presets/self-test/` and `presets/scaffold/`
+  command copies (currently they inherit Principle VI via the constitution but do not embed the
+  contract verbatim). These are fixture/scaffold presets, not the active SDD workflow, so they
+  were left for a later pass.
