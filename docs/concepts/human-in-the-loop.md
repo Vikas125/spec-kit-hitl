@@ -268,9 +268,17 @@ and enforcement wiring around it.
    `implement`, that each core command file contains a "Human-in-the-Loop Contract" heading,
    that the policy is shipped + bundled, and that `init` seeds it.
 
-**Remaining follow-ups:**
+**Preset coverage (final state):**
 
-- Propagate explicit HITL Contract blocks into the `presets/self-test/` and `presets/scaffold/`
-  command copies (currently they inherit Principle VI via the constitution but do not embed the
-  contract verbatim). These are fixture/scaffold presets, not the active SDD workflow, so they
-  were left for a later pass.
+- **`lean`** — the only *bundled/distributed* preset (force-included in `pyproject.toml`). Its
+  `specify`, `plan`, `implement`, `tasks`, and `constitution` commands carry concise HITL lines.
+- **`scaffold`** — an in-repo authoring example, not distributed. Its functional
+  `speckit.specify.md` carries the same concise HITL line so the example models the project's
+  own NON-NEGOTIABLE Principle VI. Its `speckit.myext.myextcmd.md` is a "replace-with-your-own"
+  placeholder and is intentionally left uninstrumented.
+- **`self-test`** — test fixtures (content asserted by `tests/test_presets.py`), not a real
+  workflow; intentionally left as-is.
+
+All presets and extensions additionally inherit Principle VI at runtime via the constitution and
+the agent-context HITL-enforcement injection, so the policy reaches them even where a command
+file does not embed the contract verbatim.

@@ -21,3 +21,6 @@ Given the feature description above:
 
 3. **Write the specification** to SPEC_FILE, replacing the placeholders in each section
    (Overview, Requirements, Acceptance Criteria) with details from the user's description.
+
+4. Propose defaults for unspecified details, but surface them as assumptions to confirm —
+   never silently decide scope, security, or auth (human-in-the-loop: `/memory/human-in-the-loop.md`).
