@@ -106,7 +106,8 @@ EXISTS; if absent, this block is self-sufficient).
    **Recommendation**: Option [X] — [rationale]. *(Recommendation only; nothing is chosen until you confirm.)*
    ```
 
-   - Skip a decision only when the human or spec already fixed it (record it as `[STATED]`).
+    - Before presenting options, you SHOULD perform relevant research to ensure they are accurate, feasible, and contextual: scan the current codebase (configs, structure, existing code), read documentation and specs, and, when appropriate (e.g. comparing third-party libraries, checking package versions, or assessing security advisories), perform web searches. Record key findings (pros, cons, risks) in the option descriptions.
+    - Skip a decision only when the human or spec already fixed it (record it as `[STATED]`).
    - Batch the decisions so the human can answer them together, but keep each individually
      answerable and editable. Wait for answers; do not self-resolve to keep moving.
    - Record every confirmed answer in the plan; record anything still unsettled but

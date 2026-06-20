@@ -38,10 +38,11 @@
 Across every command, agent, and workflow the AI acts as analyst, advisor, and facilitator —
 never an autonomous decision-maker. CRITICAL decisions (architecture, data model,
 security/privacy, scope, and any action that writes code or creates outward-facing artifacts)
-MUST be presented as labeled options and MUST NOT be auto-selected; assumptions MUST be
-surfaced and validated, not silently baked in; approval gates are visible and non-skippable;
-and the human may override or redirect at any decision point. Full protocol:
-`/memory/human-in-the-loop.md`.
+MUST be presented as labeled options and MUST NOT be auto-selected; before presenting options,
+the AI SHOULD scan the current codebase, docs, and specs, or use the internet to perform
+relevant searches; assumptions MUST be surfaced and validated, not silently baked in; approval
+gates are visible and non-skippable; and the human may override or redirect at any decision
+point. Full protocol: `/memory/human-in-the-loop.md`.
 
 ## [SECTION_2_NAME]
 <!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->

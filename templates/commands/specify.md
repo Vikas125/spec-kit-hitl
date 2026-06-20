@@ -28,7 +28,9 @@ You **MUST** consider the user input before proceeding (if not empty).
   feature description is a single sentence, you are missing input — ask, do not invent it.
 - **Decision points (do NOT auto-resolve)**: feature scope/boundaries, target users &
   permissions, security/privacy/compliance posture, and success criteria. These are CRITICAL
-  — present them, recommend, and let the human choose.
+  — present them, recommend, and let the human choose. Before presenting options, you SHOULD
+  scan current code, docs, and specs, or use the internet to perform relevant searches to
+  ensure choices are accurate and grounded.
 - **Assumptions**: every gap you fill with a default goes into the spec's Assumptions ledger
   marked `[ASSUMED — confirm]`. Do not silently bake defaults into requirements.
 - **Approval gate**: present the draft + the assumptions + any open decisions and **wait for
@@ -331,7 +333,9 @@ When creating this spec from a user prompt (operate as advisor, not autonomous a
 
 1. **Propose, then surface — don't silently guess**: Use context and common patterns to
    propose a fill for a gap, but record every such fill in the Assumptions ledger as
-   `[ASSUMED — confirm]`. The human can accept or change any of them.
+   `[ASSUMED — confirm]`. The human can accept or change any of them. Before presenting choices
+   or assumptions, you SHOULD perform relevant research: scan the codebase, documentation,
+   and specs, and (when appropriate) perform web searches to ground recommendations and options.
 2. **Document assumptions transparently**: The Assumptions section is a *ledger*, not a
    dumping ground — each entry is a default the human still needs to validate.
 3. **Surface CRITICAL gaps as decisions, not defaults**: For up to 3 blocking

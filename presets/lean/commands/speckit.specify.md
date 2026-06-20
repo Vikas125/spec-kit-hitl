@@ -21,5 +21,4 @@ $ARGUMENTS
    - Overview, functional requirements, user scenarios, success criteria
    - Every requirement must be testable
    - Propose defaults for unspecified details, but **surface them as assumptions to
-     confirm** — never silently decide scope, security, or auth (human-in-the-loop:
-     `/memory/human-in-the-loop.md`).
+     confirm** — never silently decide scope, security, or auth. Perform relevant research: scan codebase/docs/specs and search the web (human-in-the-loop: `/memory/human-in-the-loop.md`).

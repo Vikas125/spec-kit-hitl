@@ -1,12 +1,11 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.0.0 → 1.1.0
-Bump rationale: MINOR — adds a new binding principle (VI. Human-in-the-Loop Authority)
-  without removing or redefining any existing principle. Codifies the human-in-the-loop
-  refactor: across all Spec Kit commands (skills), agent personas, and workflows the AI
-  acts as analyst/advisor/facilitator and the human is the decision-maker. The full
-  operating protocol lives in `/memory/human-in-the-loop.md` (new single source of truth).
+Version change: 1.1.0 → 1.2.0
+Bump rationale: MINOR — updates Principle VI (Human-in-the-Loop Authority) to explicitly
+  allow and encourage scanning current code, docs, specs, or using the internet to perform
+  relevant searches when gathering context to present options for human decision-making.
+  The full operating protocol lives in `/memory/human-in-the-loop.md`.
 
 Previous version (1.0.0) Sync Impact Report retained below for history:
   Version change: (template/unratified) → 1.0.0 — initial ratification, MAJOR baseline.
@@ -184,7 +183,9 @@ is `/memory/human-in-the-loop.md`; it is binding, and the following are its hard
 - **The AI generates options; the human chooses.** CRITICAL decisions — architecture, tech
   stack, data model, security/privacy posture, scope boundaries, success criteria, and any
   action that writes code or creates outward-facing artifacts (issues, PRs, deploys) — MUST
-  be presented as labeled Decision Points and MUST NOT be auto-selected.
+  be presented as labeled Decision Points and MUST NOT be auto-selected. Before presenting options,
+  the AI SHOULD scan the current codebase, docs, and specs, or use the internet to perform
+  relevant searches to ensure the choices and recommendations are grounded and up-to-date.
 - **The AI surfaces assumptions; the human validates.** Every gap an agent fills with a
   default MUST be surfaced and marked `[ASSUMED — confirm]`, never silently baked in. Outputs
   MUST distinguish what the human stated from what the AI assumed from what is still pending a
@@ -251,4 +252,4 @@ patterns it codifies remain authoritative references.
   Added complexity or any deviation MUST be justified in-PR (and, for plans, in the plan's
   Complexity Tracking section). Unjustified violations block merge.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-19 | **Last Amended**: 2026-06-20
+**Version**: 1.2.0 | **Ratified**: 2026-06-19 | **Last Amended**: 2026-06-20

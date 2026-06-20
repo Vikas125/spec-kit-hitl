@@ -76,6 +76,12 @@ Rules:
 - Offer a **Custom** path on every decision.
 - If multiple decisions are independent, you MAY batch them, but each must be individually
   answerable and individually editable.
+- **Gather Context Through Research**: Before compiling the options, pros, cons, and
+  recommendations, the agent/skill/workflow SHOULD perform the necessary research to ground the
+  choices in reality:
+  - **Scan the current codebase**: Review relevant files, configurations, and existing structure.
+  - **Consult documentation and specs**: Read through active specifications and docs.
+  - **Perform external searches (Internet)**: When appropriate (e.g. comparing libraries, assessing dependency version updates, check for security advisories), search the web to ensure the details presented are up-to-date and accurate.
 
 ## The Assumption Ledger (output transparency)
 
