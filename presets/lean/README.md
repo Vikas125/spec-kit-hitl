@@ -20,6 +20,10 @@ Use Lean when you want the structured specify → plan → tasks → implement p
 
 Lean overrides the five core workflow commands with self-contained prompts that produce each artifact directly — no separate template files involved. The result is a shorter, more direct workflow.
 
+## Human-in-the-Loop
+
+Lean stays terse, but it does **not** drop Spec Kit's human-in-the-loop guarantees (Constitution Principle VI). Its commands still present architecture/tech choices as options with a labeled recommendation, surface defaults as assumptions to confirm, and gate before writing code — they just say it in one line and point at the full policy. See [Human-in-the-Loop](../../docs/concepts/human-in-the-loop.md).
+
 ## Installation
 
 ```bash

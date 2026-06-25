@@ -136,6 +136,10 @@ Community extensions like CI Guard and Architecture Guard add compliance gates a
     <strong>What is SDD?</strong>
     <span>The philosophy behind Spec-Driven Development</span>
   </a>
+  <a href="concepts/human-in-the-loop.md" class="nav-card">
+    <strong>Human-in-the-Loop</strong>
+    <span>How this fork keeps you the decision-maker at every gate</span>
+  </a>
 </div>
 
 ---

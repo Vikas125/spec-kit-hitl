@@ -4,6 +4,8 @@ This bundled extension manages the **coding agent context/instruction file** (e.
 
 It owns the lifecycle of the managed section delimited by the configurable start/end markers (defaults: `<!-- SPECKIT START -->` / `<!-- SPECKIT END -->`).
 
+The managed section also injects a short **Human-in-the-Loop policy reminder** (Constitution Principle VI) pointing the agent at `/memory/human-in-the-loop.md`, so every agent that loads its context file is reminded to act as an analyst/advisor and gate consequential decisions rather than decide autonomously.
+
 ## Why an extension?
 
 Not every Spec Kit user wants Spec Kit to write into the coding agent's context file. Extracting this behavior into a dedicated extension lets users:
