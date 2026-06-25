@@ -222,10 +222,14 @@ Given that feature description, do this:
       - **If [NEEDS CLARIFICATION] markers remain**:
         1. Extract all [NEEDS CLARIFICATION: ...] markers from the spec
         2. **LIMIT CHECK**: Surface at most the 3 most critical markers (by scope/security/UX impact) as blocking questions. Do **not** silently resolve the rest — record each remaining gap in the spec's Assumptions & Decision Ledger as `[ASSUMED — confirm]` so the human can still review and override it (the cap limits *blocking* questions, not a license to decide the rest)
-        3. For each clarification needed (max 3), present options to user in this format:
+        3. For each clarification needed (max 3), present options to the user in this format.
+           CRITICAL topics (scope, security/privacy/auth, success criteria) **are** Decision
+           Points: label the sensitivity and keep the Risks / Tradeoffs column so the highest-
+           stakes choices get the full canonical format from `/memory/human-in-the-loop.md`
+           (not a thinner scaffold than `__SPECKIT_COMMAND_PLAN__` uses):
 
            ```markdown
-           ## Question [N]: [Topic]
+           ## Question [N]: [Topic]   ·   Sensitivity: CRITICAL | HIGH
            
            **Context**: [Quote relevant spec section]
            
@@ -233,12 +237,12 @@ Given that feature description, do this:
            
            **Suggested Answers**:
            
-           | Option | Answer | Implications |
-           |--------|--------|--------------|
-           | A      | [First suggested answer] | [What this means for the feature] |
-           | B      | [Second suggested answer] | [What this means for the feature] |
-           | C      | [Third suggested answer] | [What this means for the feature] |
-           | Custom | Provide your own answer | [Explain how to provide custom input] |
+           | Option | Answer | Implications | Risks / Tradeoffs |
+           |--------|--------|--------------|-------------------|
+           | A      | [First suggested answer] | [What this means for the feature] | [downside / dependency] |
+           | B      | [Second suggested answer] | [What this means for the feature] | [downside / dependency] |
+           | C      | [Third suggested answer] | [What this means for the feature] | [downside / dependency] |
+           | Custom | Provide your own answer | [Explain how to provide custom input] | — |
            
            **Recommendation**: Option [X] — [1–2 sentence rationale]. *(Labeled recommendation only; nothing is selected until you confirm.)*
            
@@ -304,6 +308,11 @@ Then ask: **"Approve this spec as-is, edit any assumption/requirement, or answer
 questions?"** The spec file is written so the human can edit it directly. Do not treat the
 spec as ready, and do not auto-advance to `__SPECKIT_COMMAND_CLARIFY__` / `__SPECKIT_COMMAND_PLAN__`,
 until the human approves. Honor any edits as the new source of truth.
+
+**Reconcile the ledger before advancing**: when the human confirms an assumption or answers an
+open question, re-tag that item in the spec's Assumptions & Decision Ledger from
+`[ASSUMED — confirm]` / `[PENDING DECISION]` to `[STATED]` (recording their wording). Don't carry
+a resolved item forward still marked as an open assumption.
 
 ## Completion Report
 

@@ -90,7 +90,9 @@ Follow this execution flow:
    - Ensure each Principle section: succinct name line, paragraph (or bullet list) capturing non‑negotiable rules, explicit rationale if not obvious.
    - Ensure Governance section lists amendment procedure, versioning policy, and compliance review expectations.
 
-4. Consistency propagation checklist (convert prior checklist into active validations):
+4. Consistency propagation checklist — **identify** the needed edits now, but **apply them only
+   after the confirmation gate** (step 6.5), alongside the constitution write (never silently
+   edit dependent templates ahead of approval):
    - Read `.specify/templates/plan-template.md` and ensure any "Constitution Check" or rules align with updated principles.
    - Read `.specify/templates/spec-template.md` for scope/requirements alignment—update if constitution adds/removes mandatory sections or constraints.
    - Read `.specify/templates/tasks-template.md` and ensure task categorization reflects new or removed principle-driven task types (e.g., observability, versioning, testing discipline).
@@ -117,11 +119,17 @@ Follow this execution flow:
    - A summary of added / modified / removed principles and sections
    - Every value you inferred rather than were told, each marked `[ASSUMED — confirm]`
      (especially `RATIFICATION_DATE` and any principle wording)
+   - The list of **dependent files** the propagation (step 4) will modify — e.g.
+     `.specify/templates/plan-template.md`, `spec-template.md`, `tasks-template.md`, affected
+     command files, and runtime guidance docs — so the human authorizes those writes too, not
+     just the constitution file
 
    Ask: **"Ratify this constitution update as shown, edit it, or change the version bump?"** Do
    not overwrite the file until the human approves. Honor edits.
 
-7. After approval, write the completed constitution back to `.specify/memory/constitution.md` (overwrite).
+7. After approval, write the completed constitution back to `.specify/memory/constitution.md`
+   (overwrite) **and apply the approved propagation edits** to the dependent files identified in
+   step 4. Do not modify any file the human chose to exclude.
 
 8. Output a final summary to the user with:
    - New version and bump rationale.

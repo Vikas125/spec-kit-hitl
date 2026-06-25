@@ -103,9 +103,11 @@ steps:
     message: >
       AUTHORIZATION REQUIRED — the next step WRITES CODE and creates/modifies files
       per tasks.md. Nothing has been implemented yet. Approve only when the spec,
-      plan, and tasks reflect your decisions.
-      approve = authorize implementation · reject = abort without writing code.
-    options: [approve, reject]
+      plan, and tasks reflect your decisions. This is a CRITICAL gate — not a bare
+      yes/no: you may step back and revise before authorizing.
+      approve = authorize implementation · edit = step back to revise tasks.md/plan.md,
+      then resume · reject = abort without writing code.
+    options: [approve, edit, reject]
     on_reject: abort
 
   - id: implement
@@ -118,7 +120,7 @@ steps:
     type: gate
     message: >
       Review the implemented changes against the spec and plan. approve = accept the
-      result · reject = record the run as not accepted (does not revert files; revert
-      or follow up manually).
-    options: [approve, reject]
+      result · edit = pause to make follow-up corrections, then resume · reject = record
+      the run as not accepted (does not revert files; revert or follow up manually).
+    options: [approve, edit, reject]
     on_reject: abort

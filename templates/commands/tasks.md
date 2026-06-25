@@ -8,7 +8,6 @@ handoffs:
   - label: Implement Project
     agent: speckit.implement
     prompt: Start the implementation in phases
-    send: true
 scripts:
   sh: scripts/bash/setup-tasks.sh --json
   ps: scripts/powershell/setup-tasks.ps1 -Json
@@ -33,7 +32,11 @@ own.** Full protocol: `/memory/human-in-the-loop.md`.
   - **MVP scope**: which user stories are in the first increment. Propose an MVP (typically
     User Story 1) as a `[RECOMMENDATION]`, not a fait accompli.
 - **Assumptions** about dependencies or ordering that aren't in the artifacts go in a short
-  "Assumptions" note at the top of `tasks.md`, marked `[ASSUMED — confirm]`.
+  "Assumptions" note at the top of `tasks.md`, marked `[ASSUMED — confirm]`. Whenever you
+  proceed on a *default* rather than a stated choice (e.g. no test tasks, MVP = User Story 1),
+  record that default in the same note as `[ASSUMED — confirm]` and flag it in the Completion
+  Report — so a standalone run (without the workflow's review-tasks gate) still surfaces the
+  unconfirmed HIGH decision for the human to flip.
 - **The artifact is editable and gated**: `tasks.md` is for the human to review/adjust; the
   workflow's review-tasks gate and `__SPECKIT_COMMAND_IMPLEMENT__`'s approval gate are where
   execution is authorized. Do not start implementing here.

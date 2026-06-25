@@ -93,6 +93,28 @@ def test_critical_commands_keep_named_gates() -> None:
         ), f"{command}.md lost its approval/confirmation gate."
 
 
+DECISION_COMMANDS = ["specify", "plan", "clarify"]
+
+
+@pytest.mark.parametrize("command", DECISION_COMMANDS)
+def test_decision_commands_present_recommendation_and_custom_path(command: str) -> None:
+    """Commands that surface choices must offer a labeled recommendation AND a custom path.
+
+    This is the heart of the HITL contract the user asked for: the AI presents options *with a
+    recommendation* and the human selects one or supplies their own. Locking it in keeps a
+    future edit from silently dropping the recommendation or the custom/own-answer escape
+    hatch (the exact regression these tests otherwise allowed through).
+    """
+    text = (COMMANDS_DIR / f"{command}.md").read_text(encoding="utf-8").lower()
+    assert "recommend" in text, (
+        f"{command}.md must present a labeled recommendation alongside its options."
+    )
+    assert ("custom" in text) or ("your own" in text), (
+        f"{command}.md must offer a custom / 'provide your own' path so the human can "
+        "select a presented option or suggest a different one."
+    )
+
+
 def _load_workflow_steps() -> list[dict]:
     data = yaml.safe_load(WORKFLOW_FILE.read_text(encoding="utf-8"))
     return data["steps"]
@@ -131,6 +153,22 @@ def test_workflow_gates_every_phase_and_aborts_on_reject() -> None:
             assert nxt.get("type") == "gate", (
                 f"command step {step.get('id')} must be followed by a review gate"
             )
+
+
+def test_confirm_implementation_gate_is_not_bare_yes_no() -> None:
+    """The CRITICAL authorization gate must offer a reconsider/edit path, not approve/reject.
+
+    Policy (human-in-the-loop.md): 'A bare yes/no is not sufficient for CRITICAL gates' and
+    every gate offers a reconsider (step-back) option. confirm-implementation is the highest-
+    stakes gate (it authorizes code-writing), so it must carry an 'edit' option.
+    """
+    steps = _load_workflow_steps()
+    by_id = {s.get("id"): s for s in steps if s.get("type") == "gate"}
+    opts = by_id["confirm-implementation"].get("options", [])
+    assert "edit" in opts, (
+        "confirm-implementation must offer an 'edit'/reconsider option (not a bare "
+        f"approve/reject); got {opts}"
+    )
 
 
 def test_policy_template_is_shipped_and_bundled() -> None:

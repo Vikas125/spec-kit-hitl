@@ -99,6 +99,13 @@ or maintain a ledger section, using these four states:
 A completion report MUST distinguish "what you told me" from "what I assumed" from "what is
 still waiting on you."
 
+**Reconciliation (close the loop)**: these tags are not write-once. When the human confirms an
+`[ASSUMED — confirm]` item, re-tag it `[STATED]`; when they answer a `[PENDING DECISION]`, record
+the choice and drop the tag. An assumption must never silently harden into fact — each one is
+either confirmed (→ `[STATED]`), corrected, or carried forward still flagged. At every approval
+gate, drive the open `[ASSUMED — confirm]` / `[PENDING DECISION]` items toward resolution rather
+than letting them accumulate across phases.
+
 ## Default handling
 
 - Defaults are **suggested, never imposed**. Surface every default and say *why* it is the

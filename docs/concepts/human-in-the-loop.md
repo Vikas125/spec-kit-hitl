@@ -87,7 +87,7 @@ refactoring priority:
 | 16 | **`init.py`** | `ensure_hitl_policy_from_template()` seeds `.specify/templates/human-in-the-loop.md` → `.specify/memory/human-in-the-loop.md` on `specify init` (idempotent; skips if present), with a `("hitl-policy", …)` tracker step. |
 | 17 | **`integrations/base.py` + `agent-context` ext scripts** | The agent-context block (and the `update-agent-context` bash/PowerShell scripts) inject a *HITL Policy Enforcement* reminder pointing at `/memory/human-in-the-loop.md` (Principle VI), so every agent loads the policy. |
 | 18 | **`presets/lean/commands/*`** | Propagated concise HITL lines into the bundled lean preset's `specify`, `plan`, `implement`, `tasks`, and `constitution` commands. |
-| 19 | **`tests/test_human_in_the_loop.py`** (new) | 22 structural-enforcement tests locking in the invariants (every command embeds the contract; named gates exist; workflow gates every phase and aborts on reject; policy is shipped + bundled; `init` seeds it; constitution carries Principle VI). |
+| 19 | **`tests/test_human_in_the_loop.py`** (new) | 26 structural-enforcement tests locking in the invariants (every command embeds the contract; decision commands present a recommendation + custom path; named gates exist; the CRITICAL `confirm-implementation` gate is not a bare yes/no; workflow gates every phase and aborts on reject; policy is shipped + bundled; `init` seeds it; constitution carries Principle VI). |
 | 20 | **`docs/concepts/differences-from-upstream.md`** (new) | Side-by-side comparison of this fork vs. upstream `github/spec-kit`. |
 
 ---
@@ -168,9 +168,10 @@ validation** · **Approval gates / bypass conditions**.
 ### Workflow `speckit` (orchestration)
 - **Input required:** spec description, integration, scope (input form at entry).
 - **Decision points:** every phase boundary.
-- **Gates:** `review-spec`, `review-plan`, `review-tasks` (approve/edit/reject),
-  `confirm-implementation` and `accept-implementation` (approve/reject). All `on_reject:
-  abort`. `edit` pauses for the human to revise the artifact, then `specify workflow resume`.
+- **Gates:** `review-spec`, `review-plan`, `review-tasks`, `confirm-implementation`, and
+  `accept-implementation` — all offer **approve / edit / reject** (no CRITICAL gate is a bare
+  yes/no). All `on_reject: abort`. `edit` pauses for the human to revise/step back, then
+  `specify workflow resume`.
 
 ### Agent context (cross-cutting enforcement)
 - **What:** the agent-context block emitted by
@@ -197,7 +198,7 @@ The validation criteria and how to check each:
 | User can override/redirect at any point | At any gate choose `edit`, modify the artifact, `specify workflow resume`; confirm downstream steps consume the edited file. |
 | Outward actions gated | Run `/speckit.taskstoissues` against a GitHub remote; confirm a preview + approval prompt appears before any issue is created. |
 | Governance binds it | Run `/speckit.analyze`; confirm a Principle VI violation (e.g., a plan that auto-selected a stack with no decision record) is flagged CRITICAL. |
-| Invariants are regression-locked | Run `pytest tests/test_human_in_the_loop.py` — 22 structural tests assert every command embeds the contract, named gates exist, the workflow gates every phase and aborts on reject, the policy is shipped + bundled, and `init` seeds it. |
+| Invariants are regression-locked | Run `pytest tests/test_human_in_the_loop.py` — 26 structural tests assert every command embeds the contract, decision commands present a recommendation + custom path, named gates exist (and the CRITICAL `confirm-implementation` gate is not a bare yes/no), the workflow gates every phase and aborts on reject, the policy is shipped + bundled, and `init` seeds it. |
 
 **Automated coverage (implemented):** [`tests/test_human_in_the_loop.py`](../../tests/test_human_in_the_loop.py)
 asserts the `speckit` workflow contains a `confirm-implementation` gate immediately before
