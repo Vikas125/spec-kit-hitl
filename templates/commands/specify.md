@@ -221,7 +221,7 @@ Given that feature description, do this:
 
       - **If [NEEDS CLARIFICATION] markers remain**:
         1. Extract all [NEEDS CLARIFICATION: ...] markers from the spec
-        2. **LIMIT CHECK**: If more than 3 markers exist, keep only the 3 most critical (by scope/security/UX impact) and make informed guesses for the rest
+        2. **LIMIT CHECK**: Surface at most the 3 most critical markers (by scope/security/UX impact) as blocking questions. Do **not** silently resolve the rest — record each remaining gap in the spec's Assumptions & Decision Ledger as `[ASSUMED — confirm]` so the human can still review and override it (the cap limits *blocking* questions, not a license to decide the rest)
         3. For each clarification needed (max 3), present options to user in this format:
 
            ```markdown
@@ -240,7 +240,9 @@ Given that feature description, do this:
            | C      | [Third suggested answer] | [What this means for the feature] |
            | Custom | Provide your own answer | [Explain how to provide custom input] |
            
-           **Your choice**: _[Wait for user response]_
+           **Recommendation**: Option [X] — [1–2 sentence rationale]. *(Labeled recommendation only; nothing is selected until you confirm.)*
+           
+           **Your choice**: reply with an option letter, "recommended", or a custom answer. _[Wait for user response]_
            ```
 
         4. **CRITICAL - Table Formatting**: Ensure markdown tables are properly formatted:
