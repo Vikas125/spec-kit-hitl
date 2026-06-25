@@ -26,6 +26,21 @@ description: "Task list template for feature implementation"
 - **Mobile**: `api/src/`, `ios/src/` or `android/src/`
 - Paths shown below assume single project - adjust based on plan.md structure
 
+## Assumptions & Decisions
+
+<!--
+  HUMAN-IN-THE-LOOP (Constitution Principle VI): record any HIGH-tier choice this task list
+  rests on that the human has NOT explicitly confirmed — chiefly the test strategy (TDD vs.
+  none) and the MVP scope (which user stories ship first). Tag each so a standalone run still
+  surfaces the unconfirmed decision for the human to flip:
+    [STATED]            — the spec/plan/user fixed it; safe to rely on.
+    [ASSUMED — confirm] — a default chosen here; the human should validate or change it.
+  Remove this section only when everything below is [STATED] (nothing was assumed).
+-->
+
+- [ASSUMED — confirm] [e.g., "No test tasks generated — tests weren't requested; say 'add tests' for a TDD layer"]
+- [ASSUMED — confirm] [e.g., "MVP = User Story 1 only; later stories deferred to follow-on increments"]
+
 <!--
   ============================================================================
   IMPORTANT: The tasks below are SAMPLE TASKS for illustration purposes only.

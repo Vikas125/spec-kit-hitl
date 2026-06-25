@@ -17,6 +17,13 @@
 
 ---
 
+> **🧑‍✈️ This fork adds Human-in-the-Loop.** Unlike upstream Spec Kit, every command, agent, and
+> workflow here treats the AI as an analyst/advisor and the human as the decision-maker: it
+> presents options with a labeled recommendation and a custom path, surfaces every assumption,
+> and pauses at non-skippable approval gates before writing code or taking any outward-facing
+> action. See the [Human-in-the-Loop Framework](./docs/concepts/human-in-the-loop.md) and
+> [Differences from upstream](./docs/concepts/differences-from-upstream.md).
+
 ## Table of Contents
 
 - [🤔 What is Spec-Driven Development?](#-what-is-spec-driven-development)
