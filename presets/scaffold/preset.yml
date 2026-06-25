@@ -24,97 +24,90 @@ preset:
 
 # Requirements for this preset
 requires:
-  # CUSTOMIZE: Minimum spec-kit version required
-  speckit_version: ">=0.1.0"
+  # Pin a REALISTIC floor. This scaffold demonstrates the composition strategies
+  # (append / prepend / wrap), which were introduced in 0.8.0 — so that is the
+  # minimum. Never set this below a version that actually has the features you
+  # rely on (a too-loose floor like ">=0.1.0" lets it install where it can't work).
+  speckit_version: ">=0.8.0"
 
-# Templates provided by this preset
+# Templates provided by this preset.
+#
+# Strategy options (optional, defaults to "replace"):
+#   replace  - Fully replaces the lower-priority template (default)
+#   prepend  - Places this content BEFORE the lower-priority template
+#   append   - Places this content AFTER the lower-priority template
+#   wrap     - Uses {CORE_TEMPLATE} placeholder (templates/commands) or
+#              $CORE_SCRIPT placeholder (scripts), replaced with lower-priority content
+#   (Scripts only support "replace" and "wrap".)
+#
+# The ACTIVE entries below install cleanly with no extra dependencies. The
+# commented OPT-IN examples further down show extension overrides and the wrap
+# strategy — uncomment one only when its prerequisite (e.g. the "myext"
+# extension) is actually installed, otherwise `preset resolve` has nothing to
+# compose with and the override is dead weight.
 provides:
   templates:
-    # CUSTOMIZE: Define your template overrides
-    # Templates are document scaffolds (spec-template.md, plan-template.md, etc.)
-    #
-    # Strategy options (optional, defaults to "replace"):
-    #   replace  - Fully replaces the lower-priority template (default)
-    #   prepend  - Places this content BEFORE the lower-priority template
-    #   append   - Places this content AFTER the lower-priority template
-    #   wrap     - Uses {CORE_TEMPLATE} placeholder (templates/commands) or
-    #              $CORE_SCRIPT placeholder (scripts), replaced with lower-priority content
-    #
-    # Note: Scripts only support "replace" and "wrap" strategies.
+    # 1) REPLACE a core template outright (full override).
     - type: "template"
       name: "spec-template"
       file: "templates/spec-template.md"
       description: "Custom feature specification template"
-      replaces: "spec-template"  # Which core template this overrides (optional)
+      replaces: "spec-template"
 
-    # ADD MORE TEMPLATES: Copy this block for each template
-    # - type: "template"
-    #   name: "plan-template"
-    #   file: "templates/plan-template.md"
-    #   description: "Custom plan template"
-    #   replaces: "plan-template"
-
-    # COMPOSITION EXAMPLES:
-    # The `file` field points to the content file (can differ from the
-    # convention path `templates/<name>.md`). The `name` field identifies
-    # which template to compose with in the priority stack.
-    #
-    # Append additional sections to an existing template:
-    # - type: "template"
-    #   name: "spec-template"
-    #   file: "templates/spec-addendum.md"
-    #   description: "Add compliance section to spec template"
-    #   strategy: "append"
-    #
-    # Wrap a command with preamble/sign-off:
-    # - type: "command"
-    #   name: "speckit.specify"
-    #   file: "commands/specify-wrapper.md"
-    #   description: "Wrap specify command with compliance checks"
-    #   strategy: "wrap"
-    #   # In the wrapper file, use {CORE_TEMPLATE} where the original content goes
-
-    # OVERRIDE EXTENSION TEMPLATES:
-    # Presets sit above extensions in the resolution stack, so you can
-    # override templates provided by any installed extension.
-    # For example, if the "myext" extension provides a spec-template,
-    # the preset's version above will take priority automatically.
-
-    # Override a template provided by the "myext" extension:
-    - type: "template"
-      name: "myext-template"
-      file: "templates/myext-template.md"
-      description: "Override myext's report template"
-      replaces: "myext-template"
-
-    # Command overrides (AI agent workflow prompts)
-    # Presets can override both core and extension commands.
-    # Commands are automatically registered into all detected agent
-    # directories (.claude/commands/, .gemini/commands/, etc.)
-
-    # Override a core command:
+    # 2) REPLACE a core command (AI agent workflow prompt). Commands are
+    #    registered into every detected agent dir (.claude/commands/, etc.).
     - type: "command"
       name: "speckit.specify"
       file: "commands/speckit.specify.md"
       description: "Custom specification command"
       replaces: "speckit.specify"
 
-    # Override an extension command (e.g. from the "myext" extension):
-    - type: "command"
-      name: "speckit.myext.myextcmd"
-      file: "commands/speckit.myext.myextcmd.md"
-      description: "Override myext's myextcmd command with custom workflow"
-      replaces: "speckit.myext.myextcmd"
+    # 3) APPEND a section to a core template instead of replacing it. The `file`
+    #    holds ONLY the added content; `name` says which template to compose
+    #    with (no `replaces` needed for append). It lands after the core
+    #    plan-template — run `specify preset resolve plan-template` to see it.
+    - type: "template"
+      name: "plan-template"
+      file: "templates/plan-addendum.md"
+      description: "Append a Compliance & Sign-off section to the core plan template"
+      strategy: "append"
 
-    # Script templates (reserved for future use)
+    # ---- OPT-IN EXAMPLES (uncomment only when the prerequisite is installed) ----
+    #
+    # Override a template provided by the "myext" EXTENSION. Presets sit above
+    # extensions in the resolution stack, so this wins automatically — but only
+    # if myext is installed (otherwise there is nothing to override). The example
+    # file lives at templates/myext-template.md.
+    # - type: "template"
+    #   name: "myext-template"
+    #   file: "templates/myext-template.md"
+    #   description: "Override myext's report template"
+    #   replaces: "myext-template"
+    #
+    # Override a command provided by the "myext" EXTENSION. The example file
+    # lives at commands/speckit.myext.myextcmd.md.
+    # - type: "command"
+    #   name: "speckit.myext.myextcmd"
+    #   file: "commands/speckit.myext.myextcmd.md"
+    #   description: "Override myext's myextcmd command with custom workflow"
+    #   replaces: "speckit.myext.myextcmd"
+    #
+    # WRAP a command with a preamble/sign-off. Put {CORE_TEMPLATE} in the wrapper
+    # file where the original command content should be spliced in.
+    # - type: "command"
+    #   name: "speckit.specify"
+    #   file: "commands/specify-wrapper.md"
+    #   description: "Wrap specify with compliance checks"
+    #   strategy: "wrap"
+    #
+    # Script templates (reserved for future use; replace/wrap only):
     # - type: "script"
     #   name: "create-new-feature"
     #   file: "scripts/bash/create-new-feature.sh"
     #   description: "Custom feature creation script"
     #   replaces: "create-new-feature"
 
-# CUSTOMIZE: Add relevant tags (2-5 recommended)
-# Used for discovery in catalog
+# CUSTOMIZE: Add relevant tags (2-5 recommended). Used for catalog discovery.
 tags:
   - "example"
   - "preset"

@@ -10,7 +10,10 @@ When executing this command:
 
 1. Read the user's input from $ARGUMENTS
 2. Follow the standard myextcmd workflow
-3. Additionally, apply the following customizations from this preset:
+3. Apply the Human-in-the-Loop contract (Constitution Principle VI): present any
+   consequential choice as options with a labeled recommendation and a custom path, then
+   wait for the user — don't decide for them (human-in-the-loop: `/memory/human-in-the-loop.md`).
+4. Additionally, apply the following customizations from this preset:
    - Add compliance checks before proceeding
    - Include audit trail entries in the output
 
